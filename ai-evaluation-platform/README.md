@@ -18,3 +18,6 @@ A production-grade Python RAG and LLM Evaluation platform using FastAPI, FAISS, 
 ```bash
 uvicorn app.main:app --reload
 ```
+
+## Tests
+To run the tests, simply execute pytest in the root directory.
