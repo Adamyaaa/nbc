@@ -1,0 +1,8 @@
+pyproject.toml
+ai_evaluation_platform.egg-info/PKG-INFO
+ai_evaluation_platform.egg-info/SOURCES.txt
+ai_evaluation_platform.egg-info/dependency_links.txt
+ai_evaluation_platform.egg-info/requires.txt
+ai_evaluation_platform.egg-info/top_level.txt
+app/core/config.py
+app/models/schemas.py
