@@ -19,6 +19,8 @@ class ExperimentRunner:
             "correctness": [],
             "relevance": [],
             "groundedness": [],
+            "context_precision": [],
+            "context_recall": [],
             "latency": []
         }
 
@@ -48,6 +50,8 @@ class ExperimentRunner:
             metrics["correctness"].append(eval_res.correctness)
             metrics["relevance"].append(eval_res.relevance)
             metrics["groundedness"].append(eval_res.groundedness)
+            metrics["context_precision"].append(eval_res.context_precision)
+            metrics["context_recall"].append(eval_res.context_recall)
             metrics["latency"].append(answer.metadata.get("latency_seconds", 0.0))
             
             results.append({
@@ -62,6 +66,8 @@ class ExperimentRunner:
             "avg_correctness": statistics.mean(metrics["correctness"]) if metrics["correctness"] else 0.0,
             "avg_relevance": statistics.mean(metrics["relevance"]) if metrics["relevance"] else 0.0,
             "avg_groundedness": statistics.mean(metrics["groundedness"]) if metrics["groundedness"] else 0.0,
+            "avg_context_precision": statistics.mean(metrics["context_precision"]) if metrics["context_precision"] else 0.0,
+            "avg_context_recall": statistics.mean(metrics["context_recall"]) if metrics["context_recall"] else 0.0,
             "avg_latency": statistics.mean(metrics["latency"]) if metrics["latency"] else 0.0,
             "total_queries": len(dataset)
         }

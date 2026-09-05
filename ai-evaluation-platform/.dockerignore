@@ -1,0 +1,13 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.env
+local_index/
+*.faiss
+*.json
+tests/
+.pytest_cache/
+.vscode/
+.idea/
+.git/
