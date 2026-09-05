@@ -8,42 +8,39 @@ class Chunker:
         self.overlap = overlap
 
     def chunk_text(self, text: str, source_filename: str, doc_id: str = None) -> List[DocumentChunk]:
-        """Splits text into overlapping chunks."""
+        """Splits text into chunks based on natural paragraph boundaries."""
         doc_id = doc_id or str(uuid.uuid4())
         chunks = []
         
-        # Simple character-based sliding window
-        start = 0
-        text_length = len(text)
+        # Split by double newlines (common paragraph separator)
+        paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
         
-        while start < text_length:
-            end = min(start + self.chunk_size, text_length)
-            
-            # If we are not at the end of the text, try to find a natural break (like a space or newline)
-            if end < text_length:
-                # Try to step back to the nearest newline or space
-                last_newline = text.rfind('\n', start, end)
-                last_space = text.rfind(' ', start, end)
+        current_chunk = ""
+        for p in paragraphs:
+            # If a single paragraph is too large, we could split it further, 
+            # but for semantic chunking, keeping it intact is often better unless it exceeds a hard limit.
+            if len(current_chunk) + len(p) + 2 <= self.chunk_size:
+                current_chunk += p + "\n\n"
+            else:
+                # Save the current chunk
+                if current_chunk:
+                    metadata = DocumentMetadata(
+                        document_id=doc_id,
+                        filename=source_filename,
+                        chunk_id=str(uuid.uuid4())
+                    )
+                    chunks.append(DocumentChunk(text=current_chunk.strip(), metadata=metadata))
                 
-                if last_newline != -1 and last_newline > start + (self.chunk_size // 2):
-                    end = last_newline + 1
-                elif last_space != -1 and last_space > start + (self.chunk_size // 2):
-                    end = last_space + 1
-            
-            chunk_text = text[start:end].strip()
-            
-            if chunk_text:
-                metadata = DocumentMetadata(
-                    document_id=doc_id,
-                    filename=source_filename,
-                    chunk_id=str(uuid.uuid4())
-                )
-                chunks.append(DocumentChunk(text=chunk_text, metadata=metadata))
-            
-            start = end - self.overlap
-            
-            # Prevent infinite loops if overlap is misconfigured
-            if start <= 0 or start >= text_length:
-                break
+                # Start new chunk with overlap handling (add last few characters if needed, or just start fresh)
+                current_chunk = p + "\n\n"
+                
+        # Append the final chunk
+        if current_chunk:
+            metadata = DocumentMetadata(
+                document_id=doc_id,
+                filename=source_filename,
+                chunk_id=str(uuid.uuid4())
+            )
+            chunks.append(DocumentChunk(text=current_chunk.strip(), metadata=metadata))
                 
         return chunks

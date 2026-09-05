@@ -28,3 +28,6 @@ class EvaluationResult(BaseModel):
     relevance: float = Field(ge=0.0, le=1.0, description="Score indicating if the answer addresses the question.")
     groundedness: float = Field(ge=0.0, le=1.0, description="Score indicating if the answer is fully supported by the provided context.")
     explanation: str = Field(description="The judge's explanation for the scores.")
+
+class ExpandedQueries(BaseModel):
+    queries: List[str] = Field(description="List of expanded or rewritten queries to improve retrieval.")
